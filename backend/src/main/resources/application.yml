@@ -1,0 +1,14 @@
+spring:
+  application: { name: tiet-sync }
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5433/tiet_sync}
+    username: ${DATABASE_USERNAME:tiet_sync}
+    password: ${DATABASE_PASSWORD:tiet_sync}
+  jpa: { hibernate: { ddl-auto: validate }, open-in-view: false }
+  flyway: { enabled: true }
+server: { port: ${PORT:8080} }
+app:
+  jwt-secret: ${JWT_SECRET:development-only-change-this-to-a-32-character-minimum-secret}
+  frontend-url: ${FRONTEND_URL:http://localhost:5173}
+management: { endpoints: { web: { exposure: { include: health,info } } } }
+springdoc: { swagger-ui: { path: /swagger-ui.html } }

@@ -1,0 +1,28 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-tiet_sync}
+      POSTGRES_USER: ${POSTGRES_USER:-tiet_sync}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-tiet_sync}
+    ports: ["5433:5432"]
+    volumes: ["postgres-data:/var/lib/postgresql/data"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+  backend:
+    build: ./backend
+    environment:
+      DATABASE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-tiet_sync}
+      DATABASE_USERNAME: ${POSTGRES_USER:-tiet_sync}
+      DATABASE_PASSWORD: ${POSTGRES_PASSWORD:-tiet_sync}
+      JWT_SECRET: ${JWT_SECRET:-development-only-change-this-to-a-32-character-minimum-secret}
+      FRONTEND_URL: ${FRONTEND_URL:-http://localhost:5173}
+    ports: ["8080:8080"]
+    depends_on:
+      postgres:
+        condition: service_healthy
+volumes:
+  postgres-data:

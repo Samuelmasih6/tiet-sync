@@ -1,0 +1,3 @@
+package com.tietsync.common;
+import org.springframework.http.*; import org.springframework.web.bind.annotation.*; import jakarta.validation.ConstraintViolationException; import java.time.*; import java.util.*;
+@RestControllerAdvice public class ApiExceptionHandler { @ExceptionHandler({IllegalArgumentException.class,ConstraintViolationException.class}) ResponseEntity<?> bad(Exception e){return ResponseEntity.badRequest().body(Map.of("message",e.getMessage(),"timestamp",Instant.now()));} @ExceptionHandler(org.springframework.security.access.AccessDeniedException.class) ResponseEntity<?> denied(){return ResponseEntity.status(403).body(Map.of("message","Access denied"));} }
